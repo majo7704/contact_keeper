@@ -1,8 +1,15 @@
 const express = require("express");//common js; creates a server
+const connectDB = require('./config/db');
 
 const app = express();
 
-app.get('/', (req, res) => res.json({msg: 'Welcom to the ContactKeeper API...'}))
+// Connect Database
+connectDB();
+
+// Init Middleware
+app.use(express.json({extended: false}))//now we accept body data from req.body
+
+app.get('/', (req, res) => res.json({ msg: 'Welcom to the ContactKeeper API...' }));
 
 //Define Routes
 app.use('/api/users', require('./routes/users'));

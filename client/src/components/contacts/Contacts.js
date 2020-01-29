@@ -1,6 +1,8 @@
 import React, { useContext, useEffect } from "react";
+import Spinner from "../layout/Spinner";
 import ContactItem from "./ContactItem";
 import ContactContext from "../../context/contact/contactContext";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const Contacts = () => {
   const contactContext = useContext(ContactContext);
@@ -9,22 +11,32 @@ const Contacts = () => {
 
   useEffect(() => {
     getContacts();
-    //eslint-disabled-next-line
+    // eslint-disable-next-line
   }, []);
 
-  if (contacts.length === 0) {
+  if (contacts !== null && contacts.length === 0 && !loading) {
     return <h4>Please add a contact</h4>;
   }
 
   return (
     <>
-      {filtered !== null
-        ? filtered.map(contact => (
-            <ContactItem key={contact._id} contact={contact} />
-          ))
-        : contacts.map(contact => (
-            <ContactItem key={contact._id} contact={contact} />
-          ))}
+      {(contacts !== null) & !loading ? (
+        <TransitionGroup>
+          {filtered !== null
+            ? filtered.map(contact => (
+                <CSSTransition key={contact._id} timeout={500} className="item">
+                  <ContactItem contact={contact} />
+                </CSSTransition>
+              ))
+            : contacts.map(contact => (
+                <CSSTransition key={contact._id} timeout={500} className="item">
+                  <ContactItem contact={contact} />
+                </CSSTransition>
+              ))}
+        </TransitionGroup>
+      ) : (
+        <Spinner />
+      )}
     </>
   );
 };
